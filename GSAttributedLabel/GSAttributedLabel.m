@@ -159,6 +159,13 @@ NSString * const GSALLinkAttributeName = @"GSALLinkAttributeName";
     }
 }
 
+- (void)setEdgeInsets:(UIEdgeInsets)edgeInsets {
+    if (!UIEdgeInsetsEqualToEdgeInsets(_edgeInsets, edgeInsets)) {
+        _edgeInsets = edgeInsets;
+        [self setNeedsLayout];
+    }
+}
+
 #pragma mark Private
 
 - (void)innerInit {
@@ -219,7 +226,8 @@ NSString * const GSALLinkAttributeName = @"GSALLinkAttributeName";
     //
     // Text container
     //
-    _textContainer.size = self.bounds.size;
+    CGRect layoutRect = UIEdgeInsetsInsetRect(self.bounds, _edgeInsets);
+    _textContainer.size = layoutRect.size;
     _textContainer.lineBreakMode = _lineBreakMode;
     _textContainer.maximumNumberOfLines = _numberOfLines;
     //
@@ -267,16 +275,16 @@ NSString * const GSALLinkAttributeName = @"GSALLinkAttributeName";
 
 - (void)layoutManager:(NSLayoutManager *)layoutManager didCompleteLayoutForTextContainer:(NSTextContainer *)textContainer atEnd:(BOOL)layoutFinishedFlag {
     self.resultRect = [_layoutManager usedRectForTextContainer:_textContainer];
-    self.drawPoint = CGPointZero;
+    self.drawPoint = CGPointMake(_edgeInsets.left, _edgeInsets.top);
     CGFloat heightRemain = _textContainer.size.height - CGRectGetHeight(_resultRect);
     switch (_verticalAlignment) {
         case GSALVerticalAlignmentTop:
             break;
         case GSALVerticalAlignmentCenter:
-            _drawPoint.y = heightRemain / 2;
+            _drawPoint.y += heightRemain / 2;
             break;
         case GSALVerticalAlignmentBottom:
-            _drawPoint.y = heightRemain;
+            _drawPoint.y += heightRemain;
             break;
         default:
             break;

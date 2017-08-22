@@ -10,7 +10,7 @@
 #import "GSAttributedLabel.h"
 
 #define GSALTag 1024
-#define ROW_HEIGHT 64
+#define ROW_HEIGHT 60
 
 @interface ViewController () <GSAttributedLabelDelegate>
 
@@ -52,22 +52,26 @@
             [label appendText:@"Also for the paragraph spacing, \nwhich is set to 12 now."];
             break;
         case 4:
+            label.edgeInsets = UIEdgeInsetsMake(0, 24, 0, 64);
+            [label appendText:@"Directly set edge insets, left = 24, right = 48."];
+            break;
+        case 5:
             [label appendText:@"Support "];
             [label appendText:@"link" attributes:@{NSLinkAttributeName: @"https://bing.com"}];
             [label appendText:@" tap, and handle it in delegate."];
             break;
-        case 5:
+        case 6:
             label.linkTextAttributes = @{NSForegroundColorAttributeName: [UIColor greenColor], NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle)};
             [label appendText:@"And can use custom "];
             [label appendText:@"link" attributes:@{NSLinkAttributeName: @"https://bing.com"}];
             [label appendText:@" style like UITextView."];
             break;
-        case 6:
+        case 7:
             [label appendText:@"You can easily add image "];
             [label appendImage:[UIImage imageNamed:@"TestImage"] bounds:CGRectMake(0, -4, 16, 16)];
             [label appendText:@" with append method."];
             break;
-        case 7: {
+        case 8: {
             UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
             button.backgroundColor = [UIColor blueColor];
             button.layer.cornerRadius = 4;

@@ -36,6 +36,7 @@ typedef NS_ENUM(NSInteger, GSALVerticalAlignment) {
 @property (nonatomic, assign) CGSize                         shadowOffset;
 @property (nonatomic, copy)   NSDictionary<NSString *, id> * linkTextAttributes;
 @property (nonatomic, assign) GSALVerticalAlignment          verticalAlignment;
+@property (nonatomic, assign) UIEdgeInsets                   edgeInsets;
 
 @property (nonatomic, weak)   id<GSAttributedLabelDelegate>  delegate;
 
