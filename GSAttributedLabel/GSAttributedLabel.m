@@ -299,6 +299,11 @@ NSString * const GSALLinkAttributeName = @"GSALLinkAttributeName";
             break;
     }
     _resultLength = _layoutManager.firstUnlaidCharacterIndex;
+    if (layoutFinishedFlag) {
+        NSAssert(_resultLength == _attributedString.length, @"Result length should be equal to input length if layout finished.");
+    } else {
+        NSAssert(_resultLength < _attributedString.length, @"Result length should be smaller than input length if layout not finished.");
+    }
     // Collect views
     [_textStorage enumerateAttribute:NSAttachmentAttributeName inRange:NSMakeRange(0, _resultLength) options:0 usingBlock:^(id value, NSRange range, BOOL *stop) {
         if ([value isKindOfClass:[GSALViewAttachment class]]) {
