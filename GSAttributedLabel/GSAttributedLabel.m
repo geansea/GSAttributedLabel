@@ -54,7 +54,10 @@ NSString * const GSALLinkAttributeName = @"GSALLinkAttributeName";
 
 - (CGSize)fitSize {
     [self layoutIfNeeded];
-    return _resultRect.size;
+    CGSize fitSize = _resultRect.size;
+    fitSize.width += _edgeInsets.left + _edgeInsets.right;
+    fitSize.height += _edgeInsets.top + _edgeInsets.bottom;
+    return fitSize;
 }
 
 - (void)setAttributedText:(NSAttributedString *)attributedText {
