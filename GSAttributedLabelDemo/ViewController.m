@@ -39,7 +39,7 @@
         case 1:
             label.shadowColor = [UIColor lightGrayColor];
             label.shadowOffset = CGSizeMake(1, 1);
-            [label appendText:@"Set shadow properties like UILable."];
+            [label appendText:@"Set shadow properties like UILabel."];
             break;
         case 2:
             label.lineSpacing = 8;
