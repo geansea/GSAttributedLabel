@@ -60,6 +60,11 @@ NSString * const GSALLinkAttributeName = @"GSALLinkAttributeName";
     return fitSize;
 }
 
+- (BOOL)layoutFinished {
+    [self layoutIfNeeded];
+    return (_resultLength == _attributedString.length);
+}
+
 - (void)setAttributedText:(NSAttributedString *)attributedText {
     if (!attributedText) {
         attributedText = [[NSAttributedString alloc] initWithString:@""];

@@ -44,6 +44,7 @@ typedef NS_ENUM(NSInteger, GSALVerticalAlignment) {
 - (instancetype)init;
 - (instancetype)initWithFrame:(CGRect)frame;
 - (CGSize)fitSize;
+- (BOOL)layoutFinished;
 
 - (void)setAttributedText:(NSAttributedString *)attributedText;
 - (void)appendAttributedText:(NSAttributedString *)attributedText;
