@@ -54,7 +54,7 @@ NSString * const GSALLinkAttributeName = @"GSALLinkAttributeName";
 
 - (CGSize)fitSize {
     [self layoutIfNeeded];
-    CGSize fitSize = _resultRect.size;
+    CGSize fitSize = CGSizeMake(CGRectGetMaxX(_resultRect), CGRectGetMaxY(_resultRect));
     fitSize.width += _edgeInsets.left + _edgeInsets.right;
     fitSize.height += _edgeInsets.top + _edgeInsets.bottom;
     return fitSize;
