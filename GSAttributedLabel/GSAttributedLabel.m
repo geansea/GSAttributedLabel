@@ -186,6 +186,7 @@ NSString * const GSALLinkAttributeName = @"GSALLinkAttributeName";
     self.textAlignment = NSTextAlignmentLeft;
     self.firstLineIndent = 0;
     self.lineBreakMode = NSLineBreakByWordWrapping;
+    self.lastLineBreakMode = NSLineBreakByWordWrapping;
     self.shadowColor = nil;
     self.shadowOffset = CGSizeZero;
     self.numberOfLines = 1;
@@ -228,7 +229,7 @@ NSString * const GSALLinkAttributeName = @"GSALLinkAttributeName";
     //
     CGRect layoutRect = UIEdgeInsetsInsetRect(self.bounds, _edgeInsets);
     _textContainer.size = layoutRect.size;
-    _textContainer.lineBreakMode = _lineBreakMode;
+    _textContainer.lineBreakMode = _lastLineBreakMode;
     _textContainer.maximumNumberOfLines = _numberOfLines;
     //
     // Text storage

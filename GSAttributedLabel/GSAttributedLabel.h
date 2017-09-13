@@ -31,6 +31,7 @@ typedef NS_ENUM(NSInteger, GSALVerticalAlignment) {
 @property (nonatomic, assign) NSTextAlignment                textAlignment;
 @property (nonatomic, assign) CGFloat                        firstLineIndent;
 @property (nonatomic, assign) NSLineBreakMode                lineBreakMode;
+@property (nonatomic, assign) NSLineBreakMode                lastLineBreakMode;
 @property (nonatomic, assign) NSInteger                      numberOfLines;
 @property (nonatomic, strong) UIColor *                      shadowColor;
 @property (nonatomic, assign) CGSize                         shadowOffset;
