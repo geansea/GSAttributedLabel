@@ -82,6 +82,12 @@
             [label appendView:button bounds:CGRectMake(0, -4, 64, 24)];
             break;
         }
+        case 9:
+            [label appendText:@"Test very long text for label. "];
+            [label appendText:@"Test very long text for label. "];
+            [label appendText:@"Test very long text for label. "];
+            [label appendText:@"Test very long text for label. "];
+            break;
         default:
             break;
     }

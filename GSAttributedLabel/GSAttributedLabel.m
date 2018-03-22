@@ -20,7 +20,7 @@ NSString * const GSALLinkAttributeName = @"GSALLinkAttributeName";
 
 @end
 
-@interface GSAttributedLabel () <NSLayoutManagerDelegate>
+@interface GSAttributedLabel ()
 
 // Layout core
 @property (nonatomic, strong) NSMutableAttributedString *attributedString;
@@ -30,7 +30,8 @@ NSString * const GSALLinkAttributeName = @"GSALLinkAttributeName";
 
 // Layout result
 @property (nonatomic, assign) CGRect resultRect;
-@property (nonatomic, assign) NSUInteger resultLength;
+@property (nonatomic, assign) NSRange resultGlyphRange;
+@property (nonatomic, assign) NSRange resultRange;
 @property (nonatomic, assign) CGPoint drawPoint;
 @property (nonatomic, strong) NSMutableArray<UIView *> *attachmentViews;
 
@@ -62,7 +63,7 @@ NSString * const GSALLinkAttributeName = @"GSALLinkAttributeName";
 
 - (BOOL)layoutFinished {
     [self layoutIfNeeded];
-    return (_resultLength == _attributedString.length);
+    return (NSMaxRange(_resultRange) == _attributedString.length);
 }
 
 - (void)setAttributedText:(NSAttributedString *)attributedText {
@@ -194,7 +195,7 @@ NSString * const GSALLinkAttributeName = @"GSALLinkAttributeName";
     self.textAlignment = NSTextAlignmentLeft;
     self.firstLineIndent = 0;
     self.lineBreakMode = NSLineBreakByWordWrapping;
-    self.lastLineBreakMode = NSLineBreakByWordWrapping;
+    self.lastLineBreakMode = NSLineBreakByTruncatingTail;
     self.shadowColor = nil;
     self.shadowOffset = CGSizeZero;
     self.numberOfLines = 1;
@@ -207,14 +208,14 @@ NSString * const GSALLinkAttributeName = @"GSALLinkAttributeName";
     self.layoutManager = [[NSLayoutManager alloc] init];
     self.textContainer = [[NSTextContainer alloc] initWithSize:CGSizeZero];
     
-    _layoutManager.delegate = self;
     [_layoutManager addTextContainer:_textContainer];
     [_textStorage addLayoutManager:_layoutManager];
 }
 
 - (void)initLayoutResult {
     self.resultRect = CGRectZero;
-    self.resultLength = 0;
+    self.resultGlyphRange = NSMakeRange(0, 0);
+    self.resultRange = NSMakeRange(0, 0);
     self.drawPoint = CGPointZero;
     self.attachmentViews = [NSMutableArray array];
 }
@@ -271,18 +272,9 @@ NSString * const GSALLinkAttributeName = @"GSALLinkAttributeName";
         [layoutString addAttributes:attrs range:range];
     }];
     [_textStorage setAttributedString:layoutString];
-}
-
-- (void)drawRect:(CGRect)rect {
-    [super drawRect:rect];
-    NSRange glyphRange = [_layoutManager glyphRangeForTextContainer:_textContainer];
-    [_layoutManager drawBackgroundForGlyphRange:glyphRange atPoint:_drawPoint];
-    [_layoutManager drawGlyphsForGlyphRange:glyphRange atPoint:_drawPoint];
-}
-
-#pragma mark NSLayoutManagerDelegate
-
-- (void)layoutManager:(NSLayoutManager *)layoutManager didCompleteLayoutForTextContainer:(NSTextContainer *)textContainer atEnd:(BOOL)layoutFinishedFlag {
+    //
+    // Collect results
+    //
     self.resultRect = [_layoutManager usedRectForTextContainer:_textContainer];
     self.drawPoint = CGPointMake(_edgeInsets.left, _edgeInsets.top);
     CGFloat heightRemain = _textContainer.size.height - CGRectGetHeight(_resultRect);
@@ -298,14 +290,12 @@ NSString * const GSALLinkAttributeName = @"GSALLinkAttributeName";
         default:
             break;
     }
-    _resultLength = _layoutManager.firstUnlaidCharacterIndex;
-    if (layoutFinishedFlag) {
-        NSAssert(_resultLength == _attributedString.length, @"Result length should be equal to input length if layout finished.");
-    } else {
-        NSAssert(_resultLength < _attributedString.length, @"Result length should be smaller than input length if layout not finished.");
-    }
+    _resultGlyphRange = [_layoutManager glyphRangeForTextContainer:_textContainer];
+    _resultRange = [_layoutManager characterRangeForGlyphRange:_resultGlyphRange actualGlyphRange:NULL];
+    //
     // Collect views
-    [_textStorage enumerateAttribute:NSAttachmentAttributeName inRange:NSMakeRange(0, _resultLength) options:0 usingBlock:^(id value, NSRange range, BOOL *stop) {
+    //
+    [_textStorage enumerateAttribute:NSAttachmentAttributeName inRange:_resultRange options:0 usingBlock:^(id value, NSRange range, BOOL *stop) {
         if ([value isKindOfClass:[GSALViewAttachment class]]) {
             GSALViewAttachment *attachment = value;
             CGRect lineRect = [_layoutManager lineFragmentRectForGlyphAtIndex:range.location effectiveRange:NULL];
@@ -320,6 +310,12 @@ NSString * const GSALLinkAttributeName = @"GSALLinkAttributeName";
             [self addSubview:attachment.view];
         }
     }];
+}
+
+- (void)drawRect:(CGRect)rect {
+    [super drawRect:rect];
+    [_layoutManager drawBackgroundForGlyphRange:_resultGlyphRange atPoint:_drawPoint];
+    [_layoutManager drawGlyphsForGlyphRange:_resultGlyphRange atPoint:_drawPoint];
 }
 
 #pragma mark Gesture recognize
